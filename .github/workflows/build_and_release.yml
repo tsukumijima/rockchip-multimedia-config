@@ -1,0 +1,62 @@
+name: Build and Release Debian Package
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build_and_release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+      with:
+        platforms: linux/arm64
+
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Create Dockerfile
+      run: |
+        cat <<EOF > Dockerfile
+        FROM --platform=linux/arm64 ubuntu:20.04 as base
+
+        ENV DEBIAN_FRONTEND=noninteractive
+        RUN apt-get update && \
+            apt-get install -y \
+              devscripts \
+              debhelper \
+              dh-exec \
+              libtool
+
+        COPY . /src
+
+        FROM base as deb_builder
+        WORKDIR /src
+        RUN debuild -us -uc -b
+        EOF
+
+    - name: Build Debian Package
+      run: |
+        docker buildx build --platform linux/arm64 -o type=local,dest=output --target deb_builder -f Dockerfile .
+
+    - name: Get version
+      id: get_version
+      run: |
+        echo "version=$(dpkg-parsechangelog --show-field Version)" >> $GITHUB_OUTPUT
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: Release v${{ steps.get_version.outputs.version }}
+        tag_name: v${{ steps.get_version.outputs.version }}
+        generate_release_notes: true
+        files: |
+          ./output/rockchip-multimedia-config_${{ steps.get_version.outputs.version }}+jammy_all.deb
