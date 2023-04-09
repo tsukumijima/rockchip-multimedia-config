@@ -2,8 +2,7 @@
 
 This debian package is to enable legacy multimedia support in ARM Linux environments with Rockchip SoCs.
 
-Installing rockchip-multimedia-config enables hardware media decoding and encoding provided by [mpp](https://github.com/rockchip-linux/mpp) on your system.
-
+Installing rockchip-multimedia-config enables hardware media decoding and encoding provided by [mpp](https://github.com/rockchip-linux/mpp) and others on your system (requires separate installation of [mpp](https://github.com/tsukumijima/mpp/releases), [librga](https://github.com/tsukumijima/librga/releases) and others).  
 Note that additional configs may be required.
 
 ## Installation
