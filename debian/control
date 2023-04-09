@@ -2,7 +2,7 @@ Source: rockchip-multimedia-config
 Section: libs
 Priority: optional
 Maintainer: Jianfeng Liu <liujianfeng1994@gmail.com>
-Build-Depends: debhelper-compat (= 13)
+Build-Depends: debhelper-compat (= 11)
 Standards-Version: 4.6.0
 Homepage: https://github.com/amazingfate/rockchip-multimedia-config
 Rules-Requires-Root: no
