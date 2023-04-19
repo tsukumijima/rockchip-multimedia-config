@@ -3,3 +3,7 @@ KERNEL=="rga", MODE="0660", GROUP="video"
 KERNEL=="system-dma32", MODE="0666", GROUP="video"
 KERNEL=="system-uncached", MODE="0666", GROUP="video"
 KERNEL=="system-uncached-dma32", MODE="0666", GROUP="video" RUN+="/usr/bin/chmod a+rw /dev/dma_heap"
+# If /dev/ion exists (ION is enabled in the kernel) and the decoder process has access to /dev/ion,
+# mpp will try to initialize the HW decoder using ION and will fail.
+# To avoid this, disable ION pseudo.
+KERNEL=="ion", RUN+="/bin/rm -f /dev/ion"
